@@ -23,7 +23,7 @@ app.use(fileUpload())
 app.use('/static', express.static('public'))
 
 
-app.post('/upload', function(req, res) {
+app.post('/upload', async (req, res) => {
 
   if (!req.files || Object.keys(req.files).length === 0) { // Check if any images are recieved
     return res.status(400).send('No files were uploaded');
@@ -31,18 +31,19 @@ app.post('/upload', function(req, res) {
 
   for (let i=0;i<Object.keys(req.files).length;i++) { // Go through all images
 
-    if (!categories.includes(req.body[`category${i}`])) { // Check if defined category is allowed
+    if (!categories.includes(req.body.category)) { // Check if defined category is allowed
       return res.status(400).send('Category does not exist')
     }
 
-    const existingImages = fs.readdirSync(path.join(__dirname, `/images/${req.body[`category${i}`]}`))
+    const existingImages = fs.readdirSync(path.join(__dirname, `/images/${req.body.category}`))
     let fileName = req.files[`file${i}`].name.split('.')
 
     while (existingImages.includes(`${fileName[0]}.${fileName[1]}`)) { // Check if filename exists
       fileName[0] = `${fileName[0]}_` // Add underscore if it does
     }
 
-    req.files[`file${i}`].mv(path.join(__dirname, `/images/${req.body[`category${i}`]}/${fileName[0]}.${fileName[1]}`)) // Save file
+    await req.files[`file${i}`].mv(path.join(__dirname, `/images/${req.body.category}/${fileName[0]}.${fileName[1]}`)) // Save file
+    console.log(`${fileName[0]}.${fileName[1]} has been saved`)
   }
   return res.status(200).send('Images uploaded successfully')
 });
