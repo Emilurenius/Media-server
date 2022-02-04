@@ -6,7 +6,7 @@ const fs = require('fs')
 const cors = require('cors')
 const fileUpload = require("express-fileupload");
 
-const categories = [
+const categories = [ // Categories supported by the server
   'felles-kvelder',
   'ukategorisert'
 ]
@@ -25,23 +25,24 @@ app.use('/static', express.static('public'))
 
 app.post('/upload', function(req, res) {
 
-  if (!req.files || Object.keys(req.files).length === 0) {
+  if (!req.files || Object.keys(req.files).length === 0) { // Check if any images are recieved
     return res.status(400).send('No files were uploaded');
   }
 
-  for (let i=0;i<Object.keys(req.files).length;i++) {
-    if (!categories.includes(req.body[`category${i}`])) {
+  for (let i=0;i<Object.keys(req.files).length;i++) { // Go through all images
+
+    if (!categories.includes(req.body[`category${i}`])) { // Check if defined category is allowed
       return res.status(400).send('Category does not exist')
     }
 
     const existingImages = fs.readdirSync(path.join(__dirname, `/images/${req.body[`category${i}`]}`))
     let fileName = req.files[`file${i}`].name.split('.')
 
-    while (existingImages.includes(`${fileName[0]}.${fileName[1]}`)) {
-      fileName[0] = `${fileName[0]}_`
+    while (existingImages.includes(`${fileName[0]}.${fileName[1]}`)) { // Check if filename exists
+      fileName[0] = `${fileName[0]}_` // Add underscore if it does
     }
 
-    req.files[`file${i}`].mv(path.join(__dirname, `/images/${req.body[`category${i}`]}/${fileName[0]}.${fileName[1]}`))
+    req.files[`file${i}`].mv(path.join(__dirname, `/images/${req.body[`category${i}`]}/${fileName[0]}.${fileName[1]}`)) // Save file
   }
   return res.status(200).send('Images uploaded successfully')
 });
