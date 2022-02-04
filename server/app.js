@@ -29,18 +29,21 @@ app.post('/upload', function(req, res) {
     return res.status(400).send('No files were uploaded');
   }
 
-  else if (!categories.includes(req.body.category)) {
-    return res.status(400).send('Category does not exist')
-  }
+  for (let i=0;i<Object.keys(req.files).length;i++) {
+    if (!categories.includes(req.body[`category${i}`])) {
+      return res.status(400).send('Category does not exist')
+    }
 
-  const existingImages = fs.readdirSync(path.join(__dirname, `/images/${req.body.category}`))
-  let fileName = req.files.sampleFile.name.split('.')
-  while (existingImages.includes(`${fileName[0]}.${fileName[1]}`)) {
-    fileName[0] = `${fileName[0]}_`
-  }
+    const existingImages = fs.readdirSync(path.join(__dirname, `/images/${req.body[`category${i}`]}`))
+    let fileName = req.files[`file${i}`].name.split('.')
 
-  req.files.sampleFile.mv(path.join(__dirname, `/images/${req.body.category}/${fileName[0]}.${fileName[1]}`))
-  return res.status(200).send('Image uploaded successfully')
+    while (existingImages.includes(`${fileName[0]}.${fileName[1]}`)) {
+      fileName[0] = `${fileName[0]}_`
+    }
+
+    req.files[`file${i}`].mv(path.join(__dirname, `/images/${req.body[`category${i}`]}/${fileName[0]}.${fileName[1]}`))
+  }
+  return res.status(200).send('Images uploaded successfully')
 });
 
 
