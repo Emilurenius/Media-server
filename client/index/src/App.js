@@ -29,25 +29,30 @@ const App = () => {
   }
 
   const fileUploadHandler = () => {
-    setProgress('Laster opp: 0%')
-    const fd = new FormData()
-    fd.append('category', category)
-    for (let i=0;i<selectedFiles.length;i++) {
-      fd.append(`file${i}`, selectedFiles[i], selectedFiles[i].name)
-    }
-    axios.post(url('/upload'), fd, {
-      onUploadProgress: progressEvent => {
-        setProgress(`Laster opp: ${Math.round(progressEvent.loaded / progressEvent.total * 100)}%`)
+
+    if (!progress.includes('Laster opp')) {
+      setProgress('Laster opp: 0%')
+
+      const fd = new FormData()
+      fd.append('category', category)
+      for (let i=0;i<selectedFiles.length;i++) {
+        fd.append(`file${i}`, selectedFiles[i], selectedFiles[i].name)
       }
-    })
-      .then(res => {
-        console.log(res)
-        setProgress('Opplasting ferdig')
+      
+      axios.post(url('/upload'), fd, {
+        onUploadProgress: progressEvent => {
+          setProgress(`Laster opp: ${Math.round(progressEvent.loaded / progressEvent.total * 100)}%`)
+        }
       })
-      .catch(err => {
-        console.log(err)
-        setProgress('Oida! Noe gikk galt. Hvis problemet fortsetter, si ifra i skap chatten!')
-      })
+        .then(res => {
+          console.log(res)
+          setProgress('Opplasting ferdig')
+        })
+        .catch(err => {
+          console.log(err)
+          setProgress('Oida! Noe gikk galt. Hvis problemet fortsetter, si ifra i skap chatten!')
+        })
+    }
   }
 
   return (
