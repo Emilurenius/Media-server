@@ -17,6 +17,7 @@ const App = () => {
   const [filesAmount, setFilesAmount] = useState(`0 Filer valgt`)
   const [category, setCategory] = useState('ukategorisert')
   const [progress, setProgress] = useState('')
+  const [uploading, setUploading] = useState(false)
   const [fileInput, setFileInput] = useState(null)
 
   const fileSelectedHandler = event => {
@@ -29,6 +30,10 @@ const App = () => {
   }
 
   const fileUploadHandler = () => {
+    setUploading(true)
+    if (uploading) {
+      return
+    }
     const fd = new FormData()
     fd.append('category', category)
     for (let i=0;i<selectedFiles.length;i++) {
@@ -42,10 +47,12 @@ const App = () => {
       .then(res => {
         console.log(res)
         setProgress('Opplasting ferdig')
+        setUploading(false)
       })
       .catch(err => {
         console.log(err)
         setProgress('Oida! Noe gikk galt. Hvis problemet fortsetter, si ifra i skap chatten!')
+        setUploading(false)
       })
   }
 
