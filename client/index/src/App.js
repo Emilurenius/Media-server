@@ -7,8 +7,8 @@ import axios from 'axios'
 
 const url = (path) => {
   const origin = new URL(document.location).origin
-  //return `${origin}${path}`
-  return `http://172.16.2.108:3000${path}`
+  return `${origin}${path}`
+  //return `http://172.16.2.108:3000${path}`
 }
 
 const App = () => {
@@ -56,10 +56,14 @@ const App = () => {
         <select name='kategori' onChange={categoryChangeHandler}>
           <option value='ukategorisert'>Ukategorisert</option>
           <option value='felles-kvelder'>Felles kvelder</option>
+          <option value='elevkveld'>Elevkveld</option>
+          <option value='hverdag-på-skap'>Hverdag på skap</option>
+          <option value='turer'>Turer</option>
+          <option value='screenshots'>Screenshots</option>
         </select>
       </div>
       <div><input type='file' onChange={fileSelectedHandler} multiple style={{display: 'none'}} ref={fileInput_ => setFileInput(fileInput_)} ></input></div>
-      <div><button onClick={() => fileInput.click()} >Velg filer</button></div>
+      <div><button onClick={() => fileInput.click()} >Velg bilder</button></div>
       <div><p>{filesAmount}</p></div>
       <div><button onClick={fileUploadHandler}>Send inn</button></div>
       <div className='percentageReadout'><p>{progress}</p></div>

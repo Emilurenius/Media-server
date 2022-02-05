@@ -7,8 +7,12 @@ const cors = require('cors')
 const fileUpload = require("express-fileupload");
 
 const categories = [ // Categories supported by the server
+  'ukategorisert',
   'felles-kvelder',
-  'ukategorisert'
+  'elevkveld',
+  'hverdag-på-skap',
+  'turer',
+  'screenshots'
 ]
 
 // Reading input from terminal start
@@ -20,8 +24,13 @@ console.log(`${port} registered as server port`)
 app.use(cors()) // Making sure the browser can request more data after it is loaded on the client computer.
 app.use(fileUpload())
 
+app.use(express.static(path.join(__dirname, 'index')))
+
 app.use('/static', express.static('public'))
 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index', 'index.html'))
+})
 
 app.post('/upload', async (req, res) => {
 
