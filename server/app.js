@@ -28,6 +28,7 @@ app.post('/upload', async (req, res) => {
   if (!req.files || Object.keys(req.files).length === 0) { // Check if any images are recieved
     return res.status(400).send('No files were uploaded');
   }
+  console.log(`${Object.keys(req.files).lenght} files were uploaded`)
 
   for (let i=0;i<Object.keys(req.files).length;i++) { // Go through all images
 

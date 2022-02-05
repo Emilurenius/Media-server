@@ -2,31 +2,63 @@
 
 import logo from './logo.svg';
 import './App.css';
+import React, {useState} from 'react'
+import axios from 'axios'
 
 const url = (path) => {
   const origin = new URL(document.location).origin
-  return `${origin}${path}`
-  //return `http://172.16.2.108:3000${path}`
+  //return `${origin}${path}`
+  return `http://172.16.2.108:3000${path}`
 }
 
-function App() {
+const App = () => {
 
-  state = {
-    selectedFile: null
-  }
+  const [selectedFiles, setSelectedFiles] = useState([])
+  const [category, setCategory] = useState('ukategorisert')
+  const [progress, setProgress] = useState('')
 
   const fileSelectedHandler = event => {
-    console.log(event.target.files[0])
+    setSelectedFiles(event.target.files)
+  }
+
+  const categoryChangeHandler = event => {
+    setCategory(event.target.value)
   }
 
   const fileUploadHandler = () => {
-
+    const fd = new FormData()
+    fd.append('category', category)
+    for (let i=0;i<selectedFiles.length;i++) {
+      fd.append(`file${i}`, selectedFiles[i], selectedFiles[i].name)
+    }
+    axios.post(url('/upload'), fd, {
+      onUploadProgress: progressEvent => {
+        setProgress(`Laster opp: ${Math.round(progressEvent.loaded / progressEvent.total * 100)}%`)
+      }
+    })
+      .then(res => {
+        console.log(res)
+        setProgress('Opplasting ferdig')
+      })
+      .catch(err => {
+        console.log(err)
+        setProgress('Oida! Noe gikk galt. Hvis problemet fortsetter, si ifra i skap chatten!')
+      })
   }
 
   return (
     <div className="App">
-      <input type='file' onChange={fileSelectedHandler}></input>
+      <div className="selectContainer">
+        <select name='kategori' onChange={categoryChangeHandler}>
+          <option value='ukategorisert'>Ukategorisert</option>
+          <option value='felles-kvelder'>Felles kvelder</option>
+        </select>
+      </div>
+      <input type='file' onChange={fileSelectedHandler} multiple></input>
       <button onClick={fileUploadHandler}>Upload</button>
+      <div className='percentageReadout'>
+        <p>{progress}</p>
+      </div>
     </div>
   );
 }
