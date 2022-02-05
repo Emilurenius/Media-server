@@ -14,11 +14,14 @@ const url = (path) => {
 const App = () => {
 
   const [selectedFiles, setSelectedFiles] = useState([])
+  const [filesAmount, setFilesAmount] = useState(`0 Filer valgt`)
   const [category, setCategory] = useState('ukategorisert')
   const [progress, setProgress] = useState('')
+  const [fileInput, setFileInput] = useState(null)
 
   const fileSelectedHandler = event => {
     setSelectedFiles(event.target.files)
+    setFilesAmount(`${event.target.files.length} Filer valgt`)
   }
 
   const categoryChangeHandler = event => {
@@ -48,17 +51,18 @@ const App = () => {
 
   return (
     <div className="App">
+      <p className='header'>Legg inn bilder til Årbok!</p>
       <div className="selectContainer">
         <select name='kategori' onChange={categoryChangeHandler}>
           <option value='ukategorisert'>Ukategorisert</option>
           <option value='felles-kvelder'>Felles kvelder</option>
         </select>
       </div>
-      <input type='file' onChange={fileSelectedHandler} multiple></input>
-      <button onClick={fileUploadHandler}>Upload</button>
-      <div className='percentageReadout'>
-        <p>{progress}</p>
-      </div>
+      <div><input type='file' onChange={fileSelectedHandler} multiple style={{display: 'none'}} ref={fileInput_ => setFileInput(fileInput_)} ></input></div>
+      <div><button onClick={() => fileInput.click()} >Velg filer</button></div>
+      <div><p>{filesAmount}</p></div>
+      <div><button onClick={fileUploadHandler}>Send inn</button></div>
+      <div className='percentageReadout'><p>{progress}</p></div>
     </div>
   );
 }

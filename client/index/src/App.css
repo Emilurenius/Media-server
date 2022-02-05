@@ -1,8 +1,20 @@
-.App {
-  text-align: center;
+body {
+  background-color: #130f1c;
 }
 
-.App select {
-  margin-right: auto;
-  margin-left: auto;
+div {
+  margin: 30px;
+}
+
+.App {
+  text-align: center;
+  color: white;
+}
+
+.App select, .App button, .percentageReadout {
+  font-size: 30px;
+}
+
+.header {
+  font-size: 30px
 }

@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Media server",
+  "name": "Media server for simple sharing of files",
   "icons": [
     {
       "src": "favicon.ico",
