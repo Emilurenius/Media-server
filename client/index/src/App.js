@@ -30,7 +30,11 @@ const App = () => {
 
   const fileUploadHandler = () => {
 
-    if (!progress.includes('Laster opp')) {
+    if (selectedFiles.length == 0) {
+      setProgress('Du må velge bilder før du laster de opp')
+    }
+
+    else if (!progress.includes('Laster opp')) {
       setProgress('Laster opp: 0%')
 
       const fd = new FormData()
@@ -38,7 +42,7 @@ const App = () => {
       for (let i=0;i<selectedFiles.length;i++) {
         fd.append(`file${i}`, selectedFiles[i], selectedFiles[i].name)
       }
-      
+      const fileInput = document.getElementById('fileInput')
       axios.post(url('/upload'), fd, {
         onUploadProgress: progressEvent => {
           setProgress(`Laster opp: ${Math.round(progressEvent.loaded / progressEvent.total * 100)}%`)
@@ -47,10 +51,14 @@ const App = () => {
         .then(res => {
           console.log(res)
           setProgress('Opplasting ferdig')
+          fileInput.value = null
+          setFilesAmount(`${fileInput.files.length} Filer valgt`)
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err)
           setProgress('Oida! Noe gikk galt. Hvis problemet fortsetter, si ifra i skap chatten!')
+          fileInput.value = null
+          setFilesAmount(`${fileInput.files.length} Filer valgt`)
         })
     }
   }
@@ -68,7 +76,7 @@ const App = () => {
           <option value='screenshots'>Screenshots</option>
         </select>
       </div>
-      <div><input type='file' onChange={fileSelectedHandler} multiple style={{display: 'none'}} ref={fileInput_ => setFileInput(fileInput_)} ></input></div>
+      <div><input type='file' onChange={fileSelectedHandler} id='fileInput' multiple style={{display: 'none'}} ref={fileInput_ => setFileInput(fileInput_)} ></input></div>
       <div><button onClick={() => fileInput.click()} >Velg bilder</button></div>
       <div><p>{filesAmount}</p></div>
       <div><button onClick={fileUploadHandler}>Send inn</button></div>

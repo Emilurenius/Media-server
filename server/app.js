@@ -35,6 +35,7 @@ app.get('/', (req, res) => {
 app.post('/upload', async (req, res) => {
 
   if (!req.files || Object.keys(req.files).length === 0) { // Check if any images are recieved
+    console.warn('No images recieved')
     return res.status(400).send('No files were uploaded');
   }
   console.log(`${Object.keys(req.files).lenght} files were uploaded`)
@@ -42,6 +43,7 @@ app.post('/upload', async (req, res) => {
   for (let i=0;i<Object.keys(req.files).length;i++) { // Go through all images
 
     if (!categories.includes(req.body.category)) { // Check if defined category is allowed
+      console.warn('Category does not exist')
       return res.status(400).send('Category does not exist')
     }
 
