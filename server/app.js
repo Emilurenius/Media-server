@@ -6,6 +6,14 @@ const fs = require('fs')
 const cors = require('cors')
 const fileUpload = require("express-fileupload");
 
+const timeLog = (printData) => {
+  console.log(`${new Date()} >> ${printData}`)
+}
+
+const timeWarn = (warnData) => {
+  console.warn(`${new Date()} >> ${warnData}`)
+}
+
 const categories = [ // Categories supported by the server
   'ukategorisert',
   'felles-kvelder',
@@ -30,20 +38,21 @@ app.use('/static', express.static('public'))
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index', 'index.html'))
+  timeLog('Index page loaded')
 })
 
 app.post('/upload', async (req, res) => {
 
   if (!req.files || Object.keys(req.files).length === 0) { // Check if any images are recieved
-    console.warn('No images recieved')
+    timeWarn('No images recieved')
     return res.status(400).send('No files were uploaded');
   }
-  console.log(`${Object.keys(req.files).lenght} files were uploaded`)
+  timeLog(`${Object.keys(req.files).lenght} files were uploaded`)
 
   for (let i=0;i<Object.keys(req.files).length;i++) { // Go through all images
 
     if (!categories.includes(req.body.category)) { // Check if defined category is allowed
-      console.warn('Category does not exist')
+      timeWarn('Category does not exist')
       return res.status(400).send('Category does not exist')
     }
 
@@ -55,8 +64,9 @@ app.post('/upload', async (req, res) => {
     }
 
     await req.files[`file${i}`].mv(path.join(__dirname, `/images/${req.body.category}/${fileName[0]}.${fileName[1]}`)) // Save file
-    console.log(`${fileName[0]}.${fileName[1]} has been saved`)
+    timeLog(`${fileName[0]}.${fileName[1]} has been saved`)
   }
+  timeLog('Upload successfull')
   return res.status(200).send('Images uploaded successfully')
 });
 
