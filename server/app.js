@@ -35,10 +35,24 @@ app.use(fileUpload())
 app.use(express.static(path.join(__dirname, 'index')))
 
 app.use('/static', express.static('public'))
+app.use('/images', express.static('images'))
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index', 'index.html'))
   timeLog('Index page loaded')
+})
+
+app.get('/getUnsorted', (req,res) => {
+  fs.readdir(path.join(__dirname, 'images/ukategorisert'), (err, files) => {
+    // files.forEach(file => {
+    //   if (file != '.gitkeep') {
+    //     console.log(file)
+    //     files.push(file)
+    //   }
+    // })
+    files.shift()
+    res.send(files)
+  })
 })
 
 app.post('/upload', async (req, res) => {
